@@ -100,6 +100,20 @@ ol.steps li{margin:.34rem 0}
 .jsonbox{background:#16181d;color:#e6e8eb;padding:.95rem 1.1rem;border-radius:10px;overflow:auto;margin:.6rem 0;
   font-family:ui-mono,ui-monospace,Menlo,monospace;font-size:.86rem;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
 
+/* mission */
+.msection{padding:2.9rem 0;border-top:1px solid var(--line);text-align:center}
+.msection .eyebrow{display:block}
+.msection .pnum{font-variant-numeric:tabular-nums;font-weight:700;color:var(--fg)}
+.msection-title{font-size:1.75rem;line-height:1.15;margin:.45rem auto .2rem;max-width:22ch;text-wrap:balance}
+.manifesto{list-style:none;padding:0;margin:1.3rem auto 0;max-width:56ch;text-align:left}
+.manifesto li{position:relative;padding-left:1.5rem;margin:.6rem 0;color:#475160;font-size:1.08rem;line-height:1.55}
+.manifesto li::before{content:"";position:absolute;left:.1rem;top:.62em;width:.42rem;height:.42rem;border-radius:50%;background:var(--fg)}
+.manifesto strong{color:var(--fg)}
+.mission-body{color:#475160;max-width:60ch;font-size:1.08rem;margin:1.1rem auto 0;text-wrap:balance}
+.mission-body strong{color:var(--fg)}
+
+.disclaimer{font-size:.9rem;color:var(--muted);max-width:62ch;text-wrap:balance;margin-top:1.4rem}
+
 /* footer */
 .footer{display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap;padding:2.2rem 0;border-top:1px solid var(--line);margin-top:1rem;font-size:.9rem;color:var(--muted)}
 .footer .spacer{flex:1}
