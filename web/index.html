@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LAPSUS — community-powered local AI</title>
+  <meta name="description" content="A peer-to-peer network for local AI. Share your idle GPU, use the community's — directly, peer to peer. No Big Tech in the middle." />
+  <link rel="icon" href="/assets/lapsus.png" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <a href="/" class="brand"><img src="/assets/lapsus.png" alt="LAPSUS" /> LAPSUS</a>
+      <a href="/how" class="lnk">How it works</a>
+      <span class="spacer"></span>
+      <a href="/get" class="btn btn-primary">Get the app</a>
+    </nav>
+
+    <section class="hero">
+      <div style="text-align:center;margin-bottom:1.2rem">
+        <img src="/assets/lapsus.png" alt="LAPSUS" style="height:96px;width:96px" />
+      </div>
+      <div class="eyebrow">Community-powered local AI p2p network</div>
+      <h1 class="motto">Let's run AI.<br />On our own machines.<br />Not Big Tech's cloud.</h1>
+      <p class="lede">Let's build our own decentralized AI p2p network.</p>
+      <div class="cta">
+        <a href="/get" class="btn btn-primary">Get the app →</a>
+        <a href="/how" class="btn btn-secondary">How it works →</a>
+      </div>
+    </section>
+
+    <div class="intro-lede">
+      <p>
+        Share your idle GPU and offer tokens to the network; use the community's when you need
+        more — prompts go straight, peer to peer. Hard rate limits are built in, so you can offer
+        a text model and tap someone else's image model. Every share earns credits; using the
+        network spends them. <strong>Offer some, get some.</strong>
+      </p>
+    </div>
+
+    <div class="howhead">
+      <span class="eyebrow">See it in action</span>
+      <div class="pills">
+        <button class="pill on" data-pill="app" onclick="setDemo('app')">App</button>
+        <button class="pill" data-pill="cli" onclick="setDemo('cli')">CLI</button>
+      </div>
+    </div>
+
+    <section class="section">
+      <div>
+        <h2>Share your AI</h2>
+        <p>
+          Already running Ollama or LM Studio? Open the app and your idle GPU joins the commons.
+          You set what to share; close the app and you're instantly out.
+        </p>
+        <p class="muted">Earn credits for every request you serve.</p>
+      </div>
+      <div data-demo="app" class="show term shotframe">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <img src="/assets/shot-share.png" class="shot" alt="LAPSUS — Share AI screen" />
+      </div>
+      <div data-demo="cli" class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <div class="body"><span class="you">$ lapsus</span>
+    <span class="dim">[provider]</span> engine=lmstudio · sharing gemma-4-e2b
+    <span class="dim">[provider]</span> online — ready to serve
+    <span class="ok">✓ served gemma-4-e2b · +1177 CC</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div data-demo="app" class="show term shotframe">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <img src="/assets/shot-use.png" class="shot" alt="LAPSUS — Use AI screen" />
+      </div>
+      <div data-demo="cli" class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <div class="body"><span class="you">$ lapsus ask gemma "what is p2p?"</span>
+    <span class="dim">asking the network…</span>
+    Peer-to-peer is a decentralized network where
+    machines share resources directly, no central server.
+    <span class="dim">― 29 in / 287 out · 1177 CC</span></div>
+      </div>
+      <div>
+        <h2>Use the network</h2>
+        <p>
+          Pick a community model, send a prompt, and get the answer back from someone else's machine
+          over a direct encrypted channel. Spend the credits you earned by sharing.
+        </p>
+        <p class="muted">Markdown or JSON output, attach a file, ⌘/Ctrl+Enter to send.</p>
+        <p style="margin-top:.6rem"><strong>Remember: offer some then get some.</strong></p>
+      </div>
+    </section>
+
+    <div class="block" style="text-align:center">
+      <h2 class="block-title">Ready to join the commons?</h2>
+      <p class="block-lede" style="margin-bottom:1.2rem">Run a local model, flip the switch, and you're part of the network.</p>
+      <div class="cta"><a href="/get" class="btn btn-primary">Get the app →</a></div>
+    </div>
+
+    <footer class="footer">
+      <span>LAPSUS — early prototype</span>
+      <span class="spacer"></span>
+      <a href="/how">How it works</a>
+      <a href="/guardrail">Guardrail</a>
+      <span class="muted">Be kind to the people lending you their GPUs.</span>
+      <a href="https://github.com/pythononwheels/lapsus-app/blob/main/LICENSE" target="_blank" rel="noopener">AGPL-3.0</a>
+    </footer>
+  </div>
+
+  <script>
+    function setDemo(which){
+      document.querySelectorAll('[data-pill]').forEach(b => b.classList.toggle('on', b.dataset.pill === which));
+      document.querySelectorAll('[data-demo]').forEach(d => d.classList.toggle('show', d.dataset.demo === which));
+    }
+  </script>
+</body>
+</html>

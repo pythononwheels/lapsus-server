@@ -1,0 +1,47 @@
+# LAPSUS coordinator — production compose (behind Caddy on pyrates.io).
+# Caddy terminates TLS + upgrades WebSockets and reverse-proxies
+# lapsus.pyrates.io → 127.0.0.1:4000. The container only binds to localhost.
+#
+#   docker compose -f docker-compose.prod.yml up -d --build
+services:
+  coordinator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lapsus-coordinator:latest
+    container_name: lapsus-coordinator
+    restart: unless-stopped
+    ports:
+      # localhost only — Caddy is the public entrypoint.
+      - "127.0.0.1:${PORT:-4000}:4000"
+    environment:
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:?set SECRET_KEY_BASE in .env}
+      PHX_HOST: ${PHX_HOST:?set PHX_HOST in .env (e.g. lapsus.pyrates.io)}
+      PORT: "4000"
+      DATABASE_PATH: /data/coordinator.db
+      PHX_SERVER: "true"
+      FAUCET_CC: ${FAUCET_CC:-100}
+    volumes:
+      # The credit ledger + jobs DB — the critical, must-not-lose data.
+      - coordinator_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.75"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  coordinator_data:

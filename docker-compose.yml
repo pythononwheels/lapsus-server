@@ -1,0 +1,23 @@
+# LAPSUS coordinator — the central, deployable server component.
+# Local: `docker compose up --build`. On a real server: same, behind a TLS proxy.
+services:
+  coordinator:
+    build: .
+    image: lapsus-coordinator:latest
+    restart: unless-stopped
+    ports:
+      - "${PORT:-4000}:4000"
+    environment:
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:?set SECRET_KEY_BASE in .env}
+      PHX_HOST: ${PHX_HOST:-localhost}
+      PORT: "4000"
+      DATABASE_PATH: /data/coordinator.db
+      PHX_SERVER: "true"
+      # Generous while real credit-earning isn't wired yet (tune down later).
+      FAUCET_CC: ${FAUCET_CC:-100000}
+    volumes:
+      # Persist the credit ledger across restarts.
+      - coordinator_data:/data
+
+volumes:
+  coordinator_data:

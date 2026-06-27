@@ -1,0 +1,10 @@
+_build/
+deps/
+*.db
+*.db-*
+.git/
+.env
+.env.*
+apps/lapsus_agent/
+doc/
+*.exs.bak
