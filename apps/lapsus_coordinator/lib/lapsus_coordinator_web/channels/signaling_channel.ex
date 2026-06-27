@@ -75,6 +75,20 @@ defmodule LapsusCoordinatorWeb.SignalingChannel do
     end
   end
 
+  # Pre-flight funds check: a provider asks, before spending compute, whether the
+  # consumer can afford the estimated cost. Ensures the peer row exists first so a
+  # brand-new consumer gets its starter faucet (§4.4) and can try the network.
+  # Read-only beyond that — the real debit still happens at submit_receipt.
+  def handle_in("check_funds", %{"consumer_id" => cid, "cc" => est}, socket)
+      when is_binary(cid) and is_integer(est) and est >= 0 do
+    Ledger.ensure_peer(cid)
+    balance = Ledger.balance(cid)
+    {:reply, {:ok, %{ok: balance >= est, balance: balance}}, socket}
+  end
+
+  def handle_in("check_funds", _payload, socket),
+    do: {:reply, {:error, %{reason: "bad_request"}}, socket}
+
   # Balance + earned-today + jobs-served-today for the requesting peer (provider dashboard).
   def handle_in("stats", _payload, socket) do
     id = socket.assigns.peer_id

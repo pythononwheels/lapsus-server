@@ -191,4 +191,32 @@ defmodule LapsusCoordinatorWeb.SignalingChannelTest do
       assert Ledger.balance(consumer.peer_id) == Ledger.faucet_cc() - 30
     end
   end
+
+  describe "pre-flight funds check (check_funds)" do
+    test "ok: true and materializes the faucet for a brand-new consumer" do
+      consumer = Identity.generate()
+      {:ok, _, chan} = subscribe_and_join(connect_peer(consumer), @lobby, %{"role" => "consumer"})
+
+      ref = push(chan, "check_funds", %{"consumer_id" => consumer.peer_id, "cc" => 10})
+      assert_reply ref, :ok, %{ok: true, balance: balance}
+      # The starter faucet was granted on first check, so a newcomer can try the network.
+      assert balance == Ledger.faucet_cc()
+    end
+
+    test "ok: false when the estimate exceeds the balance" do
+      consumer = Identity.generate()
+      {:ok, _, chan} = subscribe_and_join(connect_peer(consumer), @lobby, %{"role" => "consumer"})
+
+      ref = push(chan, "check_funds", %{"consumer_id" => consumer.peer_id, "cc" => Ledger.faucet_cc() + 1})
+      assert_reply ref, :ok, %{ok: false}
+    end
+
+    test "rejects a malformed request" do
+      consumer = Identity.generate()
+      {:ok, _, chan} = subscribe_and_join(connect_peer(consumer), @lobby, %{"role" => "consumer"})
+
+      ref = push(chan, "check_funds", %{"consumer_id" => consumer.peer_id, "cc" => -1})
+      assert_reply ref, :error, %{reason: "bad_request"}
+    end
+  end
 end
