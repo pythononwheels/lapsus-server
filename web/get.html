@@ -25,12 +25,9 @@
           LAPSUS is a small local app — it sits in front of the model you already run, and joins you
           to the community network. It bundles its own runtime, so there's nothing else to install.
         </p>
-        <div class="cta" style="margin-top:1.4rem;flex-direction:column;align-items:center;gap:.7rem">
-          <a href="https://github.com/pythononwheels/lapsus-app/releases/latest/download/LAPSUS-macos-arm64.zip" class="btn btn-primary" style="min-width:22rem;justify-content:center;white-space:nowrap">Download for macOS (Apple Silicon) →</a>
-          <a href="https://github.com/pythononwheels/lapsus-app/releases/latest/download/LAPSUS-linux-x64.tar.gz" class="btn btn-secondary" style="min-width:22rem;justify-content:center;white-space:nowrap">Download for Linux (x64) →</a>
-        </div>
-        <p class="muted" style="font-size:.78rem;margin-top:.9rem;opacity:.75">
-          Intel Macs &amp; Windows are on the way.
+        <pre class="jsonbox" style="max-width:36rem;margin:1.4rem auto 0;text-align:left">curl -fsSL https://lapsus.pyrates.io/install.sh | bash</pre>
+        <p class="muted" style="font-size:.82rem;margin-top:.8rem;opacity:.85">
+          macOS &amp; Linux · no Gatekeeper prompt · installs to Applications and opens. Intel Macs &amp; Windows are on the way.
         </p>
       </div>
     </section>
@@ -59,17 +56,16 @@
 
     <div class="block" style="text-align:center">
       <h2 class="block-title">Download LAPSUS</h2>
-      <p class="block-lede">Fastest, no Gatekeeper prompt — one line in your terminal (macOS &amp; Linux):</p>
+      <p class="block-lede">One line in your terminal — macOS &amp; Linux, no Gatekeeper prompt:</p>
       <pre class="jsonbox" style="max-width:60ch;margin:1.2rem auto;text-align:left">curl -fsSL https://lapsus.pyrates.io/install.sh | bash</pre>
-      <p class="muted" style="font-size:.85rem;max-width:58ch;margin:0 auto">
-        Fetched via curl, so macOS adds no quarantine — the app just opens (no xattr, no System Settings). Prefer a GUI download? Grab the zip:
+      <p class="muted" style="font-size:.85rem;max-width:60ch;margin:0 auto">
+        Fetched via curl, so macOS adds no quarantine — it installs into <strong>Applications</strong> and just opens (no xattr, no “Open Anyway”). On macOS this is the way; a downloaded <code>.zip</code> would be blocked by Gatekeeper.
       </p>
-      <div class="cta" style="margin-top:1.3rem;flex-direction:column;align-items:center;gap:.7rem">
-        <a href="https://github.com/pythononwheels/lapsus-app/releases/latest/download/LAPSUS-macos-arm64.zip" class="btn btn-secondary" style="min-width:22rem;justify-content:center;white-space:nowrap">Download for macOS (Apple Silicon) →</a>
+      <p class="muted" style="font-size:.85rem;max-width:60ch;margin:1.2rem auto 0">On Linux you can also grab the tarball directly:</p>
+      <div class="cta" style="margin-top:1rem;flex-direction:column;align-items:center;gap:.7rem">
         <a href="https://github.com/pythononwheels/lapsus-app/releases/latest/download/LAPSUS-linux-x64.tar.gz" class="btn btn-secondary" style="min-width:22rem;justify-content:center;white-space:nowrap">Download for Linux (x64) →</a>
       </div>
       <p class="muted" style="font-size:.9rem;margin-top:.9rem;max-width:58ch;margin-left:auto;margin-right:auto">
-        <strong>macOS</strong> · unzip, then in Terminal: <code>cd ~/Downloads/LAPSUS &amp;&amp; bash start.sh</code>. (Or open the app, then <strong>System Settings → Privacy &amp; Security → Open Anyway</strong>.)<br />
         <strong>Linux</strong> · unpack and run <code>./lapsus/run-lapsus.sh</code>.
       </p>
       <p class="muted" style="font-size:.78rem;margin-top:1.4rem;opacity:.75">
