@@ -31,7 +31,10 @@ case "$os" in
     ditto -x -k "$tmp/lapsus.zip" "$tmp/out"
     app="$(find "$tmp/out" -maxdepth 3 -name 'LAPSUS.app' -type d | head -1)"
     [ -n "$app" ] || die "LAPSUS.app not found in the downloaded archive."
-    dest="$HOME/Applications"
+    # Prefer the system Applications folder (admin users can write it without sudo);
+    # fall back to the per-user one otherwise.
+    dest="/Applications"
+    [ -w "$dest" ] || dest="$HOME/Applications"
     mkdir -p "$dest"
     rm -rf "$dest/LAPSUS.app"
     cp -R "$app" "$dest/LAPSUS.app"
