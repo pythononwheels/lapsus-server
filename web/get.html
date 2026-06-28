@@ -59,16 +59,21 @@
 
     <div class="block" style="text-align:center">
       <h2 class="block-title">Download LAPSUS</h2>
-      <div class="cta" style="margin-top:1.4rem;flex-direction:column;align-items:center;gap:.7rem">
-        <a href="https://github.com/pythononwheels/lapsus-app/releases/latest/download/LAPSUS-macos-arm64.zip" class="btn btn-primary" style="min-width:22rem;justify-content:center;white-space:nowrap">Download for macOS (Apple Silicon) →</a>
+      <p class="block-lede">Fastest, no Gatekeeper prompt — one line in your terminal (macOS &amp; Linux):</p>
+      <pre class="jsonbox" style="max-width:60ch;margin:1.2rem auto;text-align:left">curl -fsSL https://lapsus.pyrates.io/install.sh | bash</pre>
+      <p class="muted" style="font-size:.85rem;max-width:58ch;margin:0 auto">
+        Fetched via curl, so macOS adds no quarantine — the app just opens (no xattr, no System Settings). Prefer a GUI download? Grab the zip:
+      </p>
+      <div class="cta" style="margin-top:1.3rem;flex-direction:column;align-items:center;gap:.7rem">
+        <a href="https://github.com/pythononwheels/lapsus-app/releases/latest/download/LAPSUS-macos-arm64.zip" class="btn btn-secondary" style="min-width:22rem;justify-content:center;white-space:nowrap">Download for macOS (Apple Silicon) →</a>
         <a href="https://github.com/pythononwheels/lapsus-app/releases/latest/download/LAPSUS-linux-x64.tar.gz" class="btn btn-secondary" style="min-width:22rem;justify-content:center;white-space:nowrap">Download for Linux (x64) →</a>
       </div>
-      <p class="muted" style="font-size:.9rem;margin-top:.9rem;max-width:56ch;margin-left:auto;margin-right:auto">
-        <strong>macOS</strong> · unzip, then double-click <strong>"Fix &amp; Open LAPSUS"</strong> — it clears the unsigned-beta block and launches the app. (Or open the app, then <strong>System Settings → Privacy &amp; Security → Open Anyway</strong>.)<br />
+      <p class="muted" style="font-size:.9rem;margin-top:.9rem;max-width:58ch;margin-left:auto;margin-right:auto">
+        <strong>macOS</strong> · unzip, then in Terminal: <code>cd ~/Downloads/LAPSUS &amp;&amp; bash start.sh</code>. (Or open the app, then <strong>System Settings → Privacy &amp; Security → Open Anyway</strong>.)<br />
         <strong>Linux</strong> · unpack and run <code>./lapsus/run-lapsus.sh</code>.
       </p>
       <p class="muted" style="font-size:.78rem;margin-top:1.4rem;opacity:.75">
-        Terminal alternative (macOS): <code>xattr -dr com.apple.quarantine /path/to/LAPSUS.app</code> · Intel Macs &amp; Windows are on the way.
+        Unsigned beta. Intel Macs &amp; Windows are on the way.
       </p>
     </div>
 
