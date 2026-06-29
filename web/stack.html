@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LAPSUS — Under the hood</title>
+  <meta name="description" content="The LAPSUS tech stack: how a prompt travels directly, peer to peer — Elixir/BEAM, Phoenix signaling, WebRTC transport, Ed25519 identities — built for speed, reliability, security and privacy." />
+  <link rel="icon" href="/assets/lapsus.png" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div id="site-header"></div>
+
+    <section class="hero" style="padding-bottom:1.5rem">
+      <div class="eyebrow">Under the hood</div>
+      <h1 style="font-size:2rem;line-height:1.1;margin:.4rem 0 .8rem">How the p2p actually works</h1>
+      <p class="lede">
+        A thin coordinator only <strong>introduces</strong> two peers; the prompt and answer then flow
+        <strong>directly between them</strong>, encrypted — never through a server. Here's the stack that does
+        it, and why.
+      </p>
+    </section>
+
+    <div class="block" style="border-top:0">
+      <h2 class="block-title">Built for four things</h2>
+      <div style="max-width:64ch;margin:1.2rem auto 0">
+        <p><strong>Speed</strong> — the prompt goes straight to the serving peer over a direct channel (no cloud hop), and the model runs locally.</p>
+        <p><strong>Reliability</strong> — the Erlang VM supervises and self-heals; WebRTC punches through NATs so peers actually connect and stay connected.</p>
+        <p><strong>Security</strong> — self-authenticating keypair IDs, an encrypted peer channel, and every job settled by a receipt both sides signed.</p>
+        <p><strong>Privacy</strong> — the coordinator never sees a prompt; traffic is end-to-end encrypted and travels peer to peer.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <h2 class="block-title">The stack</h2>
+      <p class="block-lede">Standards and battle-tested libraries — we add the credit layer, not a new protocol.</p>
+      <div class="trio" style="margin-top:1.4rem">
+        <div class="tcard">
+          <h3>Elixir · the BEAM</h3>
+          <p>App and coordinator run on the Erlang VM: massive lightweight concurrency + OTP supervision, so processes self-heal. <em>Reliability.</em></p>
+          <a class="lnk2" href="https://elixir-lang.org" target="_blank" rel="noopener">Read more →</a>
+        </div>
+        <div class="tcard">
+          <h3>Phoenix · Slipstream</h3>
+          <p>Peers reach the thin coordinator over WebSockets to discover each other and swap connection details. It only introduces — it never carries prompts. <em>Reliability, privacy.</em></p>
+          <a class="lnk2" href="https://www.phoenixframework.org" target="_blank" rel="noopener">Read more →</a>
+        </div>
+        <div class="tcard">
+          <h3>Elixir WebRTC</h3>
+          <p>Two peers open a <strong>direct, encrypted (DTLS)</strong> channel with NAT traversal (ICE) and reliable data channels (SCTP). The prompt/answer flow straight between them. <em>Speed, privacy, security.</em></p>
+          <a class="lnk2" href="https://github.com/elixir-webrtc/ex_webrtc" target="_blank" rel="noopener">Read more →</a>
+        </div>
+        <div class="tcard">
+          <h3>Ed25519 identity</h3>
+          <p>Your peer ID <em>is</em> your public key — no accounts, no passwords, no central authority. Every message and receipt is signed. <em>Security, privacy.</em></p>
+          <a class="lnk2" href="https://ed25519.cr.yp.to" target="_blank" rel="noopener">Read more →</a>
+        </div>
+        <div class="tcard">
+          <h3>Signed receipts · SQLite</h3>
+          <p>Each job is a receipt signed by both peers; the coordinator books the Compute-Credits into an append-only ledger. Content-free. <em>Security.</em></p>
+          <a class="lnk2" href="/how">How credits work →</a>
+        </div>
+        <div class="tcard">
+          <h3>Ollama · LM Studio</h3>
+          <p>The model runs on the peer's <strong>own machine</strong>; LAPSUS just sits in front of whichever engine you already run. <em>Privacy, speed.</em></p>
+          <a class="lnk2" href="https://ollama.com" target="_blank" rel="noopener">Read more →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="block" style="border-bottom:0;text-align:center">
+      <div class="eyebrow">The shape</div>
+      <h2 class="block-title">Coordinator introduces, peers talk direct</h2>
+      <svg class="diagram" style="margin-top:1.2rem" viewBox="0 0 640 262" role="img" aria-label="LAPSUS peer-to-peer architecture">
+        <rect x="200" y="16" width="240" height="56" rx="12" fill="var(--soft)" stroke="var(--line)" />
+        <text x="320" y="40" text-anchor="middle" font-size="14" font-weight="600" fill="var(--fg)">Coordinator</text>
+        <text x="320" y="58" text-anchor="middle" font-size="11" fill="var(--muted)">introduces peers · keeps credits</text>
+        <line x1="260" y1="72" x2="135" y2="184" stroke="var(--muted)" stroke-width="1.4" stroke-dasharray="4 4" opacity=".55" />
+        <line x1="380" y1="72" x2="505" y2="184" stroke="var(--muted)" stroke-width="1.4" stroke-dasharray="4 4" opacity=".55" />
+        <text x="170" y="125" font-size="10" fill="var(--muted)" transform="rotate(-41 170 125)">signaling</text>
+        <text x="470" y="125" font-size="10" fill="var(--muted)" transform="rotate(41 470 125)">signaling</text>
+        <rect x="30" y="184" width="200" height="72" rx="12" fill="#fff" stroke="var(--fg)" stroke-width="1.5" />
+        <text x="130" y="214" text-anchor="middle" font-size="14" font-weight="600" fill="var(--fg)">You</text>
+        <text x="130" y="234" text-anchor="middle" font-size="11" fill="var(--muted)">your local model</text>
+        <rect x="410" y="184" width="200" height="72" rx="12" fill="#fff" stroke="var(--fg)" stroke-width="1.5" />
+        <text x="510" y="214" text-anchor="middle" font-size="14" font-weight="600" fill="var(--fg)">A peer</text>
+        <text x="510" y="234" text-anchor="middle" font-size="11" fill="var(--muted)">their local model</text>
+        <line x1="236" y1="220" x2="404" y2="220" stroke="var(--fg)" stroke-width="2.5" />
+        <polyline points="245,213 236,220 245,227" fill="none" stroke="var(--fg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        <polyline points="395,213 404,220 395,227" fill="none" stroke="var(--fg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        <text x="320" y="206" text-anchor="middle" font-size="12" font-weight="600" fill="var(--fg)">prompt ⇄ answer</text>
+      </svg>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+  <script src="/site.js"></script>
+</body>
+</html>
