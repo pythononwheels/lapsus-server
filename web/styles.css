@@ -114,6 +114,19 @@ ol.steps li{margin:.34rem 0}
 
 .disclaimer{font-size:.9rem;color:var(--muted);max-width:62ch;text-wrap:balance;margin-top:1.4rem}
 
+/* layered tech stack */
+.stack{margin-top:1.6rem;display:flex;flex-direction:column;gap:.85rem}
+.layer{border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.25rem;background:var(--bg)}
+.layer.mid{border-color:var(--fg);box-shadow:0 1px 3px rgba(20,24,28,.06)}
+.layer-head{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;margin-bottom:.9rem}
+.layer-tag{font-size:.7rem;font-weight:750;letter-spacing:.09em;text-transform:uppercase;color:var(--bg);background:var(--fg);border-radius:999px;padding:.22rem .62rem}
+.layer-sub{color:var(--muted);font-size:.9rem}
+.layer-items{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem}
+@media (max-width:760px){.layer-items{grid-template-columns:1fr}}
+.layer-item h4{font-size:.98rem;margin:0 0 .25rem;font-weight:650;color:var(--fg)}
+.layer-item p{color:#475160;font-size:.88rem;line-height:1.5;margin:0 0 .45rem}
+.layer-item a{font-size:.82rem;font-weight:550;color:var(--fg);margin-right:.9rem;white-space:nowrap}
+
 /* footer */
 .footer{display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap;padding:2.2rem 0;border-top:1px solid var(--line);margin-top:1rem;font-size:.9rem;color:var(--muted)}
 .footer .spacer{flex:1}

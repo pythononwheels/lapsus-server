@@ -40,6 +40,7 @@
     '<a href="/how">How it works</a>' +
     '<a href="/mission">The mission</a>' +
     '<a href="/why">Why LAPSUS</a>' +
+    '<a href="/stack">Under the hood</a>' +
     '<a href="/guardrail">Guardrail</a>' +
     '<a href="https://github.com/pythononwheels/lapsus-app/blob/main/LICENSE" target="_blank" rel="noopener">AGPL-3.0</a>' +
     "</footer>";
