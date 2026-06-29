@@ -219,4 +219,33 @@ defmodule LapsusCoordinatorWeb.SignalingChannelTest do
       assert_reply ref, :error, %{reason: "bad_request"}
     end
   end
+
+  describe "escrow reserve" do
+    test "reserves credits and reports balance; available drops" do
+      provider = Identity.generate()
+      consumer = Identity.generate()
+      {:ok, _, chan} = subscribe_and_join(connect_peer(provider), @lobby, %{"role" => "provider"})
+
+      ref = push(chan, "reserve", %{"consumer_id" => consumer.peer_id, "request_id" => "job-r1", "cc" => 10})
+      assert_reply ref, :ok, %{ok: true, balance: balance}
+      assert balance == Ledger.faucet_cc()
+      assert Ledger.held(consumer.peer_id) == 10
+      assert Ledger.available(consumer.peer_id) == Ledger.faucet_cc() - 10
+    end
+
+    test "fails when the estimate exceeds available" do
+      provider = Identity.generate()
+      consumer = Identity.generate()
+      {:ok, _, chan} = subscribe_and_join(connect_peer(provider), @lobby, %{"role" => "provider"})
+
+      ref =
+        push(chan, "reserve", %{
+          "consumer_id" => consumer.peer_id,
+          "request_id" => "job-r2",
+          "cc" => Ledger.faucet_cc() + 1
+        })
+
+      assert_reply ref, :error, %{reason: "insufficient_funds"}
+    end
+  end
 end

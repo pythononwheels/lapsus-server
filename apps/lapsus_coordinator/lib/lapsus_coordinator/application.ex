@@ -16,8 +16,8 @@ defmodule LapsusCoordinator.Application do
       {DNSCluster, query: Application.get_env(:lapsus_coordinator, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: LapsusCoordinator.PubSub},
       LapsusCoordinator.Presence,
-      # Start a worker by calling: LapsusCoordinator.Worker.start_link(arg)
-      # {LapsusCoordinator.Worker, arg},
+      # Releases expired escrow holds (reservations whose job never settled).
+      LapsusCoordinator.Ledger.Reaper,
       # Start to serve requests, typically the last entry
       LapsusCoordinatorWeb.Endpoint
     ]

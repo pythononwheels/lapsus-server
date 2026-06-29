@@ -89,6 +89,21 @@ defmodule LapsusCoordinatorWeb.SignalingChannel do
   def handle_in("check_funds", _payload, socket),
     do: {:reply, {:error, %{reason: "bad_request"}}, socket}
 
+  # Escrow reserve (called by a provider before it serves): hold `cc` from the
+  # consumer for this request. Hard version of check_funds — it actually reserves,
+  # so the credits can't be double-spent and are guaranteed present at settlement.
+  # The hold is cleared when the receipt is booked (submit_receipt) or by the reaper.
+  def handle_in("reserve", %{"consumer_id" => cid, "request_id" => rid, "cc" => cc}, socket)
+      when is_binary(cid) and is_binary(rid) and is_integer(cc) and cc > 0 do
+    case Ledger.reserve(cid, rid, cc, provider_id: socket.assigns.peer_id) do
+      :ok -> {:reply, {:ok, %{ok: true, balance: Ledger.balance(cid)}}, socket}
+      {:error, reason} -> {:reply, {:error, %{reason: to_string(reason)}}, socket}
+    end
+  end
+
+  def handle_in("reserve", _payload, socket),
+    do: {:reply, {:error, %{reason: "bad_request"}}, socket}
+
   # Balance + earned-today + jobs-served-today for the requesting peer (provider dashboard).
   def handle_in("stats", _payload, socket) do
     id = socket.assigns.peer_id

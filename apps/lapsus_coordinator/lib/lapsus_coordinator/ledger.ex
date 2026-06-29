@@ -10,8 +10,12 @@ defmodule LapsusCoordinator.Ledger do
   import Ecto.Query
 
   alias Ecto.Multi
-  alias LapsusCoordinator.Ledger.{Entry, Peer}
+  alias LapsusCoordinator.Ledger.{Entry, Hold, Peer}
   alias LapsusCoordinator.Repo
+
+  # An escrow hold older than this with no settlement is auto-released (the job
+  # timed out / the peer vanished). Comfortably over the 60s request timeout.
+  @hold_ttl_seconds 300
 
   # Tiny starter grace for a new identity — enough to try the network, not to
   # leech (see §4.4). The real income is serving compute. Configurable because dev
@@ -59,6 +63,68 @@ defmodule LapsusCoordinator.Ledger do
   @spec stats(String.t()) :: %{balance: integer(), earned_today: integer()}
   def stats(peer_id), do: %{balance: balance(peer_id), earned_today: earned_today(peer_id)}
 
+  @doc "Sum of this consumer's active escrow holds (reserved-but-not-settled CC)."
+  @spec held(String.t()) :: integer()
+  def held(consumer_id) do
+    Repo.one(from(h in Hold, where: h.consumer_id == ^consumer_id, select: sum(h.amount_cc))) || 0
+  end
+
+  @doc "Spendable balance: current balance minus credits reserved by open holds."
+  @spec available(String.t()) :: integer()
+  def available(peer_id), do: balance(peer_id) - held(peer_id)
+
+  @doc """
+  Reserve (escrow) `cc` from `consumer_id` for `request_id`, before the work runs.
+  Fails if the consumer's *available* balance is too low. Idempotent per
+  `request_id` (re-reserving the same request is a no-op `:ok`). Materializes the
+  starter faucet for a brand-new peer so newcomers can try the network (§4.4).
+  """
+  @spec reserve(String.t(), String.t(), pos_integer(), keyword()) ::
+          :ok | {:error, :insufficient_funds | term()}
+  def reserve(consumer_id, request_id, cc, opts \\ [])
+      when is_binary(consumer_id) and is_binary(request_id) and is_integer(cc) and cc > 0 do
+    ensure_peer(consumer_id)
+
+    case Repo.get_by(Hold, request_id: request_id) do
+      %Hold{} ->
+        :ok
+
+      nil ->
+        if available(consumer_id) >= cc do
+          %Hold{}
+          |> Hold.changeset(%{
+            request_id: request_id,
+            consumer_id: consumer_id,
+            provider_id: opts[:provider_id],
+            relay_id: opts[:relay_id],
+            amount_cc: cc
+          })
+          |> Repo.insert(on_conflict: :nothing, conflict_target: :request_id)
+          |> case do
+            {:ok, _} -> :ok
+            {:error, reason} -> {:error, reason}
+          end
+        else
+          {:error, :insufficient_funds}
+        end
+    end
+  end
+
+  @doc "Release an escrow hold without booking (job failed / cancelled)."
+  @spec release(String.t()) :: :ok
+  def release(request_id) when is_binary(request_id) do
+    Repo.delete_all(from(h in Hold, where: h.request_id == ^request_id))
+    :ok
+  end
+
+  @doc "Auto-release holds older than the TTL (the reaper). Returns the count freed."
+  @spec sweep_expired(pos_integer()) :: non_neg_integer()
+  def sweep_expired(ttl_seconds \\ @hold_ttl_seconds) do
+    cutoff = DateTime.add(DateTime.utc_now(), -ttl_seconds, :second)
+    {n, _} = Repo.delete_all(from(h in Hold, where: h.inserted_at < ^cutoff))
+    n
+  end
+
   @doc """
   Book a completed job: debit the consumer and credit the provider by `cc`,
   atomically, with an audit entry. Fails if the consumer lacks the funds.
@@ -83,6 +149,8 @@ defmodule LapsusCoordinator.Ledger do
     ensure_peer(provider_id)
 
     Multi.new()
+    # Settle against any escrow hold for this request (frees the reservation).
+    |> Multi.delete_all(:clear_hold, from(h in Hold, where: h.request_id == ^to_string(job_ref)))
     |> Multi.run(:debit, fn repo, _ ->
       {count, _} =
         repo.update_all(
