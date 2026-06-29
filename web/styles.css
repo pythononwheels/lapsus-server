@@ -123,7 +123,8 @@ ol.steps li{margin:.34rem 0}
 .layer-sub{color:var(--muted);font-size:.9rem}
 .layer-items{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem}
 @media (max-width:760px){.layer-items{grid-template-columns:1fr}}
-.layer-item h4{font-size:.98rem;margin:0 0 .25rem;font-weight:650;color:var(--fg)}
+.layer-item h4{font-size:.98rem;margin:0 0 .25rem;font-weight:650;color:var(--fg);display:flex;align-items:center;gap:.45rem}
+.li-ico{width:17px;height:17px;flex:none;opacity:.9}
 .layer-item p{color:#475160;font-size:.88rem;line-height:1.5;margin:0 0 .45rem}
 .layer-item a{font-size:.82rem;font-weight:550;color:var(--fg);margin-right:.9rem;white-space:nowrap}
 
